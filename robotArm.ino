@@ -97,12 +97,12 @@ void servoStartPos(Servo s, int pos){
 
 void loop() {
 
-  jsVal = analogRead(jsArmY);
+  jsVal = readAnSig(jsArmY);
   if(jsVal < jsNegThresh || jsVal > jsPosThresh){
     sArmBasePos = checkServo(sArmBase, sArmBasePos, jsVal); 
   }
 
-  jsVal = analogRead(jsArmX);
+  jsVal = readAnSig(jsArmX);
   if(jsVal < jsNegThresh || jsVal > jsPosThresh){
     if(ArmMode == shoulderMode){
       sArmShoulderPos = checkServo(sArmShoulder, sArmShoulderPos, jsVal);
@@ -112,12 +112,12 @@ void loop() {
     }
   }
 
-  jsVal = analogRead(jsClawY);
+  jsVal = readAnSig(jsClawY);
   if(jsVal < jsNegThresh || jsVal > jsPosThresh){
     sClawGripPos = checkServo(sClawGrip, sClawGripPos, jsVal);
   }
 
-  jsVal = analogRead(jsClawX);
+  jsVal = readAnSig(jsClawX);
   if(jsVal < jsNegThresh || jsVal > jsPosThresh){
     if(clawMode == angleMode){
        sClawAnglePos = checkServo(sClawAngle, sClawAnglePos, jsVal);
@@ -164,6 +164,18 @@ void loop() {
   
 }
 
+uint16_t readAnSig(int pin){
+  uint16_t anRead = 0;
+  uint8_t loop = 0;
+  for(loop=0; loop<8;loop++){
+    anRead += analogRead(pin);
+  }
+
+  anRead /= 8;
+
+  return anRead;
+}
+
 int checkServo(Servo s, int servoPos, int jsVal){ 
   if(jsVal < jsNegThresh){
     Serial.print(jsVal);
@@ -179,7 +191,7 @@ int checkServo(Servo s, int servoPos, int jsVal){
     Serial.print("servoPos: ");
     Serial.print(servoPos);
     Serial.print("\n\r");
-    time_now = millis();
+    //time_now = millis();
     //while(millis() < time_now + 5){
     //}
     //delay(5);  
@@ -198,7 +210,7 @@ int checkServo(Servo s, int servoPos, int jsVal){
     Serial.print("servoPos: ");
     Serial.print(servoPos);
     Serial.print("\n\r");
-    time_now = millis();
+    //time_now = millis();
     //while(millis() < time_now + 5){
     //}
   }
